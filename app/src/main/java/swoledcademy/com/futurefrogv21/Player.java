@@ -1,6 +1,9 @@
 package swoledcademy.com.futurefrogv21;
 
 import android.graphics.Point;
+import android.util.Log;
+
+import java.util.Map;
 
 public class Player extends Entity
 {
@@ -121,11 +124,33 @@ public class Player extends Entity
     @Override
     public void move(int moveDirection)
     {
+        Log.i("MOVEMENT", "HAHAHAHAHA");
         this.direction = moveDirection;
         try
         {
             if (moveDirection == 0) //up
             {
+                if(MapManipulator.map.get(mapCoords.y - 1).get(mapCoords.x) == '@') //If the spot moved into is an entity
+                {
+                    Log.i("WALKED INTO SOMETHING", "WALKED INTO SOMETHING");
+                    for(int i = 1; i < MapManipulator.entities.size(); i++) //Finds which entity was interacted with
+                    {
+                        if(MapManipulator.entities.get(i).mapCoords.x == mapCoords.x && MapManipulator.entities.get(i).mapCoords.y == mapCoords.y - 1)
+                        {
+                            MapManipulator.entities.get(i).interact(name); //IMPLIMENT THIS
+                            break;
+                        }
+                    }
+                }
+                else if (!(MapManipulator.noPass.contains(MapManipulator.map.get(mapCoords.y - 1).get(mapCoords.x))))
+                {
+                    MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '-');
+                    mapCoords.y -= 1;
+                    MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '@');
+
+                    running = true;
+                }
+                /*
                 if (!(MapManipulator.noPass.contains(MapManipulator.map.get(mapCoords.y - 1).get(mapCoords.x))))
                 {
                     MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '-');
@@ -134,9 +159,31 @@ public class Player extends Entity
 
                     running = true;
                 }
+                */
             }
             else if (moveDirection == 1) //right
             {
+                if(MapManipulator.map.get(mapCoords.y).get(mapCoords.x + 1) == '@') //If the spot moved into is an entity
+                {
+                    Log.e("WALKED INTO SOMETHING", "WALKED INTO SOMETHING");
+                    for(int i = 1; i < MapManipulator.entities.size(); i++) //finds which entity was interacted with
+                    {
+                        if(MapManipulator.entities.get(i).mapCoords.x == mapCoords.x + 1 && MapManipulator.entities.get(i).mapCoords.y == mapCoords.y)
+                        {
+                            MapManipulator.entities.get(i).interact(name); //IMPLIMENT THIS
+                            break;
+                        }
+                    }
+                }
+                else if (!(MapManipulator.noPass.contains(MapManipulator.map.get(mapCoords.y).get(mapCoords.x + 1))))
+                {
+                    MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '-');
+                    mapCoords.x += 1;
+                    MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '@');
+
+                    running = true;
+                }
+                /*
                 if (!(MapManipulator.noPass.contains(MapManipulator.map.get(mapCoords.y).get(mapCoords.x + 1))))
                 {
                     MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '-');
@@ -145,9 +192,31 @@ public class Player extends Entity
 
                     running = true;
                 }
+                */
             }
             else if(moveDirection == 2) //down
             {
+                if(MapManipulator.map.get(mapCoords.y + 1).get(mapCoords.x) == '@') //If the spot moved into is an entity
+                {
+                    Log.e("WALKED INTO SOMETHING", "WALKED INTO SOMETHING");
+                    for(int i = 1; i < MapManipulator.entities.size(); i++) //finds which entity was interacted with
+                    {
+                        if(MapManipulator.entities.get(i).mapCoords.x == mapCoords.x && MapManipulator.entities.get(i).mapCoords.y == mapCoords.y + 1)
+                        {
+                            MapManipulator.entities.get(i).interact(name); //IMPLIMENT THIS
+                            break;
+                        }
+                    }
+                }
+                else if(!(MapManipulator.noPass.contains(MapManipulator.map.get(mapCoords.y + 1).get(mapCoords.x))))
+                {
+                    MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '-');
+                    mapCoords.y += 1;
+                    MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '@');
+
+                    running = true;
+                }
+                /*
                 if(!(MapManipulator.noPass.contains(MapManipulator.map.get(mapCoords.y + 1).get(mapCoords.x))))
                 {
                     MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '-');
@@ -156,9 +225,31 @@ public class Player extends Entity
 
                     running = true;
                 }
+                */
             }
             else if(moveDirection == 3) //left
             {
+                if(MapManipulator.map.get(mapCoords.y).get(mapCoords.x - 1) == '@') //If the spot moved into is an entity
+                {
+                    Log.e("WALKED INTO SOMETHING", "WALKED INTO SOMETHING");
+                    for(int i = 1; i < MapManipulator.entities.size(); i++) //finds which entity was interacted with
+                    {
+                        if(MapManipulator.entities.get(i).mapCoords.x == mapCoords.x - 1 && MapManipulator.entities.get(i).mapCoords.y == mapCoords.y)
+                        {
+                            MapManipulator.entities.get(i).interact(name); //IMPLIMENT THIS
+                            break;
+                        }
+                    }
+                }
+                else if(!(MapManipulator.noPass.contains(MapManipulator.map.get(mapCoords.y).get(mapCoords.x - 1))))
+                {
+                    MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '-');
+                    mapCoords.x -= 1;
+                    MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '@');
+
+                    running = true;
+                }
+                /*
                 if(!(MapManipulator.noPass.contains(MapManipulator.map.get(mapCoords.y).get(mapCoords.x - 1))))
                 {
                     MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '-');
@@ -167,6 +258,7 @@ public class Player extends Entity
 
                     running = true;
                 }
+                */
             }
         }
         catch(Exception e)

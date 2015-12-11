@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.Log;
@@ -24,12 +25,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     private int canvasWidth;
     private int canvasHeight;
 
+    private Paint paint = new Paint(); //For drawing text to screen
+    private String printText = "Swaaag";
+
     public GamePanel(Context context, Resources resources)
     {
         super(context);
         MapManipulator.dimensions.add(new Point(11, 11)); //Index 0, for map0
 
-        MapManipulator.storeMap(0, context);
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(75);
+
+        MapManipulator.loadMapFromFile(0, context);
 
         //add the callback to the surfaceholder to intercept events
         getHolder().addCallback(this);
@@ -87,28 +94,33 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     {
         if(event.getAction() == MotionEvent.ACTION_DOWN)
         {
-            if((event.getRawX() > canvasWidth / 2 - MapManipulator.entities.get(0).pixelWidth / 2) && (event.getRawX() < canvasWidth / 2 + MapManipulator.entities.get(0).pixelWidth / 2))
+            for(int i = 0; i < MapManipulator.entities.size(); i++)
+            {
+                MapManipulator.entities.get(i).setDialogue("");
+            }
+            //printText = "";
+            if((event.getRawX() > canvasWidth / 2 - MapManipulator.entities.get(0).pixelWidth) && (event.getRawX() < canvasWidth / 2 + MapManipulator.entities.get(0).pixelWidth))
             {
                 //Up
-                if(event.getRawY() < canvasHeight / 2 - MapManipulator.entities.get(0).pixelHeight / 2)
+                if(event.getRawY() < canvasHeight / 2 - MapManipulator.entities.get(0).pixelHeight)
                 {
                     MapManipulator.entities.get(0).move(0);
                 }
                 //Down
-                else if(event.getRawY() > canvasHeight / 2 + MapManipulator.entities.get(0).pixelHeight / 2)
+                else if(event.getRawY() > canvasHeight / 2 + MapManipulator.entities.get(0).pixelHeight )
                 {
                     MapManipulator.entities.get(0).move(2);
                 }
             }
-            else if((event.getRawY() > canvasHeight / 2 - MapManipulator.entities.get(0).pixelHeight / 2) && (event.getRawY() < canvasHeight / 2 + MapManipulator.entities.get(0).pixelHeight / 2))
+            else if((event.getRawY() > canvasHeight / 2 - MapManipulator.entities.get(0).pixelHeight) && (event.getRawY() < canvasHeight / 2 + MapManipulator.entities.get(0).pixelHeight))
             {
                 //Left
-                if(event.getRawX() < canvasWidth / 2 - MapManipulator.entities.get(0).pixelWidth / 2)
+                if(event.getRawX() < canvasWidth / 2 - MapManipulator.entities.get(0).pixelWidth)
                 {
                     MapManipulator.entities.get(0).move(3);
                 }
                 //Right
-                else if(event.getRawX() > canvasWidth / 2 + MapManipulator.entities.get(0).pixelWidth / 2)
+                else if(event.getRawX() > canvasWidth / 2 + MapManipulator.entities.get(0).pixelWidth)
                 {
                     MapManipulator.entities.get(0).move(1);
                 }
@@ -211,6 +223,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
         Log.i("PLAYERIMGXY", String.format("X:%d, Y:%d", playerImageX, playerImageY));
         MapManipulator.printMap();
+
+        for(int i = 0; i < MapManipulator.entities.size(); i++)
+        {
+            printText = MapManipulator.entities.get(i).getDialogue();
+            if(MapManipulator.entities.get(i).dialogue != "")
+            {
+                break;
+            }
+        }
+
+        canvas.drawText(printText, 0, canvasHeight / 2, paint);
     }
 
     private ArrayList<Integer> orderEntities()

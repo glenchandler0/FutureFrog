@@ -1,6 +1,7 @@
 package swoledcademy.com.futurefrogv21;
 
 import android.graphics.Point;
+import android.util.Log;
 
 public class Entity
 {
@@ -14,6 +15,7 @@ public class Entity
     public int frameCounter;
 
     public String name;
+    public String dialogue = "";
 
     //The x and y will be mapX and mapY
     public Entity(int mapX, int mapY, int pixelWidth, int pixelHeight, int direction, String name)
@@ -52,9 +54,26 @@ public class Entity
 
         try
         {
-            if (direction == 0) //up
+            for(int i = 0; i < MapManipulator.entities.size(); i++)
             {
-                if (!(MapManipulator.noPass.contains(MapManipulator.map.get(mapCoords.y - 1).get(mapCoords.x))))
+                MapManipulator.entities.get(i).setDialogue("ssSwagg");
+            }
+
+            if (direction == 0) //up---
+            {
+                if(MapManipulator.map.get(mapCoords.y - 1).get(mapCoords.x) == '@') //If the spot moved into is an entity
+                {
+                    Log.i("WALKED INTO SOMETHING", "WALKED INTO SOMETHING");
+                    for(int i = 1; i < MapManipulator.entities.size(); i++) //Finds which entity was interacted with
+                    {
+                        if(MapManipulator.entities.get(i).mapCoords.x == mapCoords.x && MapManipulator.entities.get(i).mapCoords.y == mapCoords.y - 1)
+                        {
+                            MapManipulator.entities.get(i).interact(name); //IMPLIMENT THIS
+                            break;
+                        }
+                    }
+                }
+                else if (!(MapManipulator.noPass.contains(MapManipulator.map.get(mapCoords.y - 1).get(mapCoords.x))))
                 {
                     MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '-');
                     mapCoords.y -= 1;
@@ -62,27 +81,67 @@ public class Entity
                 }
 
             }
-            else if (direction == 1) //right
+
+            else if (direction == 1) //right---
             {
-                if (!(MapManipulator.noPass.contains(MapManipulator.map.get(mapCoords.y).get(mapCoords.x + 1))))
+                if(MapManipulator.map.get(mapCoords.y).get(mapCoords.x + 1) == '@') //If the spot moved into is an entity
+                {
+                    Log.e("WALKED INTO SOMETHING", "WALKED INTO SOMETHING");
+                    for(int i = 1; i < MapManipulator.entities.size(); i++) //finds which entity was interacted with
+                    {
+                        if(MapManipulator.entities.get(i).mapCoords.x == mapCoords.x + 1 && MapManipulator.entities.get(i).mapCoords.y == mapCoords.y)
+                        {
+                            MapManipulator.entities.get(i).interact(name); //IMPLIMENT THIS
+
+                            break;
+                        }
+                    }
+                }
+                else if (!(MapManipulator.noPass.contains(MapManipulator.map.get(mapCoords.y).get(mapCoords.x + 1))))
                 {
                     MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '-');
                     mapCoords.x += 1;
                     MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '@');
                 }
             }
-            else if(direction == 2) //down
+
+            else if(direction == 2) //down---
             {
-                if(!(MapManipulator.noPass.contains(MapManipulator.map.get(mapCoords.y + 1).get(mapCoords.x))))
+                if(MapManipulator.map.get(mapCoords.y + 1).get(mapCoords.x) == '@') //If the spot moved into is an entity
+                {
+                    Log.e("WALKED INTO SOMETHING", "WALKED INTO SOMETHING");
+                    for(int i = 1; i < MapManipulator.entities.size(); i++) //finds which entity was interacted with
+                    {
+                        if(MapManipulator.entities.get(i).mapCoords.x == mapCoords.x && MapManipulator.entities.get(i).mapCoords.y == mapCoords.y + 1)
+                        {
+                            MapManipulator.entities.get(i).interact(name); //IMPLIMENT THIS
+                            break;
+                        }
+                    }
+                }
+                else if(!(MapManipulator.noPass.contains(MapManipulator.map.get(mapCoords.y + 1).get(mapCoords.x))))
                 {
                     MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '-');
                     mapCoords.y += 1;
                     MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '@');
                 }
             }
-            else if(direction == 3) //left
+
+            else if(direction == 3) //left---
             {
-                if(!(MapManipulator.noPass.contains(MapManipulator.map.get(mapCoords.y).get(mapCoords.x - 1))))
+                if(MapManipulator.map.get(mapCoords.y).get(mapCoords.x - 1) == '@') //If the spot moved into is an entity
+                {
+                    Log.e("WALKED INTO SOMETHING", "WALKED INTO SOMETHING");
+                    for(int i = 1; i < MapManipulator.entities.size(); i++) //finds which entity was interacted with
+                    {
+                        if(MapManipulator.entities.get(i).mapCoords.x - 1== mapCoords.x && MapManipulator.entities.get(i).mapCoords.y == mapCoords.y)
+                        {
+                            MapManipulator.entities.get(i).interact(name); //IMPLIMENT THIS
+                            break;
+                        }
+                    }
+                }
+                else if(!(MapManipulator.noPass.contains(MapManipulator.map.get(mapCoords.y).get(mapCoords.x - 1))))
                 {
                     MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '-');
                     mapCoords.x -= 1;
@@ -94,5 +153,21 @@ public class Entity
         {
             e.printStackTrace();
         }
+    }
+
+    public int interact(String name)
+    {
+        dialogue = this.name + ": Hello " + name + "!";
+        return -1;
+    }
+
+    public void setDialogue(String d)
+    {
+        dialogue = d;
+    }
+
+    public String getDialogue()
+    {
+        return dialogue;
     }
 }

@@ -34,9 +34,12 @@ public class MapManipulator
 
     public static int mapBitmapNum = 0;
 
+    private static Context c;
+
     //Look into being able to access context anywhere, or passing it to constructor
-    public static void storeMap(int mapNum, Context context)
+    public static void loadMapFromFile(int mapNum, Context context)
     {
+        c = context;
         map.clear();
         ArrayList<Character> temp = new ArrayList<>();
 
@@ -113,7 +116,7 @@ public class MapManipulator
     }
 
     //Different map load options
-    public static void loadSpecificMap(int mapNum, Context context)
+    public static void loadSpecificMap(int mapNum/*, Context context*/)
     {
         //IN ALL OF THE LOAD MAPS METHODS, PLAYER MUST BE ADDED FIRST!!!!!
         entities.clear();
@@ -121,20 +124,33 @@ public class MapManipulator
         switch(mapNum)
         {
             case 0:
-                loadMap0(context);
+                loadMap0(c);
+                break;
+
+            case 1:
+                loadMap1(c);
                 break;
 
             default:
-                loadMap0(context);
+                loadMap0(c);
                 break;
         }
     }
 
     private static void loadMap0(Context context)
     {
-        entities.get(0).mapCoords.x = 1;
-        entities.get(0).mapCoords.y = 2;
-        entities.add(new Entity(2, 2,100,100,0,"Bob"));
-        storeMap(0, context);
+        loadMapFromFile(0,context);
+        entities.get(0).mapCoords.x = 10;
+        entities.get(0).mapCoords.y = 10;
+        entities.add(new Entity(1,2,100,100,0,"Bob"));
+        entities.add(new Door(1,1, 250, 250, 0, "Door 0", 1));
+    }
+
+    private static void loadMap1(Context context)
+    {
+        loadMapFromFile(0, context);
+        entities.get(0).mapCoords.x = 5;
+        entities.get(0).mapCoords.y = 5;
+        entities.add(new Door(5,4,250,250,0,"Door1", 0));
     }
 }

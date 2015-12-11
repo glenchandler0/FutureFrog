@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.util.Log;
 import android.view.SurfaceHolder;
+import android.widget.TextView;
 
 public class MainThread extends Thread
 {
@@ -23,9 +24,10 @@ public class MainThread extends Thread
     public MainThread(SurfaceHolder surfaceHolder, GamePanel gamePanel, Resources resources)
     {
         super();
-        MapManipulator.entities.add(MapManipulator.player = new Player(1,2,150,150,0, "Steve"));
+        MapManipulator.entities.add(MapManipulator.player = new Player(1, 2, 150, 150, 0, "Steve"));
         MapManipulator.entities.add(new Entity(3, 3, 500, 500, 2, "John"));
         MapManipulator.entities.add(new Entity(3, 1, 100, 100, 3, "Bob"));
+        MapManipulator.entities.add(new Door(6,1, 300,300, 2, "Door", 0));
 
         MapManipulator.noPass.add('+');
         MapManipulator.noPass.add('@');
