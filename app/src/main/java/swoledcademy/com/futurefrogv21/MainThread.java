@@ -24,14 +24,20 @@ public class MainThread extends Thread
     public MainThread(SurfaceHolder surfaceHolder, GamePanel gamePanel, Resources resources)
     {
         super();
-        MapManipulator.entities.add(MapManipulator.player = new Player(1, 2, 150, 150, 0, "Steve"));
-        MapManipulator.entities.add(new Entity(3, 3, 500, 500, 2, "John"));
-        MapManipulator.entities.add(new Entity(3, 1, 100, 100, 3, "Bob"));
-        MapManipulator.entities.add(new Door(6,1, 300,300, 2, "Door", 0));
 
+        MapManipulator.loadMapFromFile(0); //player can't be initialized until there's a map, read from file
+        MapManipulator.entities.add(MapManipulator.player = new Player(10, 10, 150, 150, 0, "Steve")); //Simultaniously initialized MapManipulator.player and places in MapManipulator.entities.get(0)
+        MapManipulator.loadSpecificMap(0); //map is loaded normally with standard streamlined method.
+
+        //Title dialogue
+        MapManipulator.entities.get(0).dialogue = "                 FUTURE FROG\n            Tap near your character\n            in a direction to move.";
+
+        //Sets the characters that can't be walked through
         MapManipulator.noPass.add('+');
         MapManipulator.noPass.add('@');
+        MapManipulator.noPass.add(null);
 
+        //Passes in necessary initialized classes so that the thread can use them.
         this.surfaceHolder = surfaceHolder;
         this.gamePanel = gamePanel;
         this.resources  = resources;

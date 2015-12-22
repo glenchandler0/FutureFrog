@@ -29,10 +29,11 @@ public class MainActivity extends Activity
         //set to full screen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        //Creates new instance of GamePanel, passing in the resources from MainActivity. Game Panel will handle the game
         setContentView(new GamePanel(this, getResources()));
     }
 
-    //OnCreateOptionsMenu
+    //OnCreateOptionsMenu--unused
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -41,7 +42,7 @@ public class MainActivity extends Activity
         return true;
     }
 
-
+    //Unused for now
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {

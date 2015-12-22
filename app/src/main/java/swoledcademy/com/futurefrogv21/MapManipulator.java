@@ -17,17 +17,13 @@ public class MapManipulator
 {
     //ALL STATIC
 
-    public static Entity player;
+    public static Entity player; //Initialized in MainThread when game starts.
 
-    //Entities!
+    //Entities! can be referenced from everywhere. It is cleared every time a new map is set
     public static ArrayList<Entity> entities = new ArrayList<Entity>(); //Static so any class can add or manipulate entities
 
     public static ArrayList<ArrayList<Character>> map = new ArrayList<ArrayList<Character>>();
     public static ArrayList<Character> noPass = new ArrayList<Character>(); //This is initiated in
-
-    //Hard coded map dimensions, will be initiated in GamePanel constructor, because it is much more simple than
-    //Most detection algorithms
-    public static ArrayList<Point> dimensions = new ArrayList<Point>();
 
     public static int mapDimX;
     public static int mapDimY;
@@ -36,14 +32,19 @@ public class MapManipulator
 
     private static Context c;
 
-    //Look into being able to access context anywhere, or passing it to constructor
-    public static void loadMapFromFile(int mapNum, Context context)
+    public static void setContext(Context context)
     {
         c = context;
-        map.clear();
-        ArrayList<Character> temp = new ArrayList<>();
+    }
 
-        AssetManager am = context.getAssets();
+    //Sets map to the text file, so it can be manipulated in game.
+    public static void loadMapFromFile(int mapNum)
+    {
+        //c = context;
+        map.clear();
+        //ArrayList<Character> temp = new ArrayList<>();
+
+        AssetManager am = c.getAssets();
         String s = "";
         String t = "";
         try
@@ -74,8 +75,8 @@ public class MapManipulator
             }
 
             mapBitmapNum = mapNum;
-            mapDimX = dimensions.get(mapNum).x;
-            mapDimY = dimensions.get(mapNum).y;
+            mapDimX = columnCounter;
+            mapDimY = rowCounter;
         }
         catch(Exception e)
         {
@@ -108,49 +109,111 @@ public class MapManipulator
             case 0:
                 return R.drawable.map0;
             case 1:
-                break;
+                return R.drawable.map1;
+            case 2:
+                return R.drawable.map2;
             default:
                 return R.drawable.map0;
         }
-        return R.drawable.map0;
     }
 
     //Different map load options
     public static void loadSpecificMap(int mapNum/*, Context context*/)
     {
-        //IN ALL OF THE LOAD MAPS METHODS, PLAYER MUST BE ADDED FIRST!!!!!
         entities.clear();
         entities.add(player);
+        //ALL LOADMAPS PASSED c
         switch(mapNum)
         {
             case 0:
-                loadMap0(c);
+                loadMap0();
                 break;
 
             case 1:
-                loadMap1(c);
+                loadMap1();
+                break;
+
+            case 2:
+                loadMap2();
                 break;
 
             default:
-                loadMap0(c);
+                loadMap0();
                 break;
         }
     }
 
-    private static void loadMap0(Context context)
+    //First map layout is in MainThread.
+
+    private static void loadMap0()
     {
-        loadMapFromFile(0,context);
-        entities.get(0).mapCoords.x = 10;
-        entities.get(0).mapCoords.y = 10;
-        entities.add(new Entity(1,2,100,100,0,"Bob"));
-        entities.add(new Door(1,1, 250, 250, 0, "Door 0", 1));
+        int temp = mapBitmapNum; //Holds previous map location
+        loadMapFromFile(0);
+
+        if(temp == 1) //From parking lot
+        {
+            player.mapCoords.x = 10;
+            player.mapCoords.y = 1;
+            player.direction = 2;
+        }
+        else if(temp == 2) //from office
+        {
+            player.mapCoords.x = 3;
+            player.mapCoords.y = 1;
+            player.direction = 2;
+        }
+        else if(temp == 3)
+        {
+            player.mapCoords.x = 5;
+            player.mapCoords.y = 1;
+            player.direction = 2;
+        }
+        else if(temp == 0)
+        {
+            player.mapCoords.x = 10;
+            player.mapCoords.y = 10;
+            player.direction = 0;
+
+            MapManipulator.entities.add(new Cooler(1, 0, 150, 150, 0, "Mysterious Cooler"));
+        }
+
+        MapManipulator.entities.add(new Entity(5,4,150,150,0, "Michael"));
+        MapManipulator.entities.add(new Door(3, 0, 200, 200, 0, "Boss's office", 2));
+        MapManipulator.entities.add(new Painting(4,0,50,50,0, "trump"));
+        MapManipulator.entities.add(new Door(5,0, 200, 200, 0, "Bathroom", 3));
+        MapManipulator.entities.add(new Painting(7,0,100,100, 0, "clock"));
+        MapManipulator.entities.add(new Door(10, 0, 200, 200, 0, "Garage", 1));
+        MapManipulator.entities.add(new Trigger(10,9,0,0,0,"mydesk"));
     }
 
-    private static void loadMap1(Context context)
+    private static void loadMap1()
     {
-        loadMapFromFile(0, context);
-        entities.get(0).mapCoords.x = 5;
-        entities.get(0).mapCoords.y = 5;
-        entities.add(new Door(5,4,250,250,0,"Door1", 0));
+        if(Happenings.stage == 0)
+            entities.get(0).setDialogue("Looks like he's not here...");
+
+        Happenings.stage = 1;
+        loadMapFromFile(1);
+        entities.get(0).mapCoords.x = 4;
+        entities.get(0).mapCoords.y = 4;
+        entities.get(0).direction = 0;
+        entities.add(new Door(4,5,200,250,2,"Door1", 0));
+
+
+    }
+
+    private static void loadMap2()
+    {
+        if(Happenings.stage == 1)
+            entities.get(0).setDialogue("What the heck...");
+
+        Happenings.stage = 2;
+        loadMapFromFile(2);
+        entities.get(0).mapCoords.x = 2;
+        entities.get(0).mapCoords.y = 4;
+        entities.get(0).direction = 0;
+
+        entities.add(new Door(2,5,200,250,2,"Door1", 0));
+        entities.add(new Trigger(2,2,0,0,0,"bossnote"));
+        entities.add(new Painting(3,0,200,200,0,"diploma"));
     }
 }

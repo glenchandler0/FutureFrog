@@ -9,16 +9,20 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 {
+    //This thread will handle the game running.
     private MainThread thread;
 
     //public static ArrayList<Entity> entities = new ArrayList<Entity>(); //Static so any class can add or manipulate entities
@@ -26,21 +30,33 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     private int canvasHeight;
 
     private Paint paint = new Paint(); //For drawing text to screen
-    private String printText = "Swaaag";
+    private Paint paintShadow = new Paint();
+    private Paint thoughtPaint = new Paint();
+    private String printText = "";
 
     public GamePanel(Context context, Resources resources)
     {
         super(context);
-        MapManipulator.dimensions.add(new Point(11, 11)); //Index 0, for map0
 
+        //Setting Paints for drawing text
         paint.setColor(Color.WHITE);
-        paint.setTextSize(75);
-
-        MapManipulator.loadMapFromFile(0, context);
+        paint.setTextSize(100);
+        paintShadow.setColor(Color.BLACK);
+        paintShadow.setTextSize(100);
+        thoughtPaint.setColor(Color.WHITE);
+        thoughtPaint.setTextSize(75);
+        Typeface face = Typeface.createFromAsset(context.getAssets(), "fonts/pokemon.ttf");
+        paint.setTypeface(face);
+        paintShadow.setTypeface(face);
+        thoughtPaint.setTypeface(face);
 
         //add the callback to the surfaceholder to intercept events
         getHolder().addCallback(this);
 
+        //Sets MapManipular.c private variable through this method so it only needs to be done once
+        MapManipulator.setContext(context);
+
+        //Initialized to draw to screen
         thread = new MainThread(getHolder(), this, resources);
 
         //make gamePanel focusable so it can handle events
@@ -92,13 +108,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
+        //If there was a touch to the screen.
         if(event.getAction() == MotionEvent.ACTION_DOWN)
         {
+            //Tapping the screen will set sprite to center of tile before offsetting in move() function
+            MapManipulator.entities.get(0).xOffset = 0.5;
+            MapManipulator.entities.get(0).yOffset = 0.5;
+
+            //Any time the screen is touched, all entity's dialogues are erased.
             for(int i = 0; i < MapManipulator.entities.size(); i++)
             {
                 MapManipulator.entities.get(i).setDialogue("");
             }
-            //printText = "";
+
             if((event.getRawX() > canvasWidth / 2 - MapManipulator.entities.get(0).pixelWidth) && (event.getRawX() < canvasWidth / 2 + MapManipulator.entities.get(0).pixelWidth))
             {
                 //Up
@@ -136,22 +158,22 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
     //These are A-Okay
     @Override
-    public void draw(Canvas canvas)
-    {
+    public void draw(Canvas canvas) {
         super.draw(canvas);
         canvasWidth = canvas.getWidth();
         canvasHeight = canvas.getHeight();
 
         canvas.drawColor(Color.BLACK);
 
-        int blockPixelSize = 50;
+        int blockPixelSize = 500; //This probably does nothing
         Rect tempBitmapRect = null;
-        Rect phoneSizeRect = new Rect(0,0, canvas.getWidth(), canvas.getHeight());
+        Rect phoneSizeRect = new Rect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         //Loading player and map bitmap
         Bitmap playerBitmap = BitmapFactory.decodeResource(getResources(), MapManipulator.entities.get(0).getBitmap());
         Bitmap mapBitmap = BitmapFactory.decodeResource(getResources(), MapManipulator.getMapBitmap());
 
+        Log.d("TEXT MAP DIMENSIONS: ", MapManipulator.mapDimX + ", " + MapManipulator.mapDimY);
         //Getting mapImg size for finding conversion ratio
         int imgX = mapBitmap.getWidth();
         int imgY = mapBitmap.getHeight();
@@ -159,19 +181,20 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         //Log.i("MapXY_", String.format("X:%d, Y: %d", MapManipulator.mapDimX, MapManipulator.mapDimY));
 
         //Ratio between size of map and size of map image
-        double ratioX = (double)(MapManipulator.mapDimX * blockPixelSize) / (double)imgX;
-        double ratioY = (double)(MapManipulator.mapDimY * blockPixelSize) / (double)imgY;
+        double ratioX = (double) (MapManipulator.mapDimX * blockPixelSize) / (double) imgX;
+        double ratioY = (double) (MapManipulator.mapDimY * blockPixelSize) / (double) imgY;
         //Log.i("Screen-MapRatio: ", String.format("RX: %.5f, RY: %.5f", ratioX, ratioY));
 
         //Finds the estimated player position on the map image using the ratio
-        int playerImageX = (int)((MapManipulator.entities.get(0).mapCoords.x * blockPixelSize) / ratioX);
-        int playerImageY = (int)((MapManipulator.entities.get(0).mapCoords.y * blockPixelSize) / ratioY);
+        int playerImageX = (int) (((MapManipulator.entities.get(0).mapCoords.x + MapManipulator.entities.get(0).xOffset) * blockPixelSize) / ratioX); //-----
+        int playerImageY = (int) (((MapManipulator.entities.get(0).mapCoords.y + MapManipulator.entities.get(0).yOffset) * blockPixelSize) / ratioY);  //------
 
         //Finds where the corners of the screen should be around the player
         int phoneULeftX = playerImageX - (canvas.getWidth() / 2);
         int phoneULeftY = playerImageY - (canvas.getHeight() / 2);
         int phoneBRightX = playerImageX + (canvas.getWidth() / 2);
         int phoneBRightY = playerImageY + (canvas.getHeight() / 2);
+        Log.e("PHONE BOX", String.format("PhoneULeftX: %d\nPhoneULeftY: %d\nPhoneBRightX: %d\nPhoneBRightY: %d", phoneULeftX, phoneULeftY, phoneBRightX, phoneBRightY));
 
 
         //Drawing the map
@@ -187,12 +210,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         ArrayList<Integer> ordered = orderEntities();
         int j = 0;
         //Starts at 1 because player is entity[0]
-        for(int i = 0; i < ordered.size(); i++)
-        {
+        for (int i = 0; i < ordered.size(); i++) {
             j = ordered.get(i);
-            Log.i("J IN THE LOOP: ", "" +j);
-            if(j == 0)
-            {
+            Log.i("J IN THE LOOP: ", "" + j);
+            if (j == 0) {
                 tempBitmapRect = new Rect(
                         (canvas.getWidth() / 2) - (MapManipulator.entities.get(0).pixelWidth / 2),
                         (canvas.getHeight() / 2) - (MapManipulator.entities.get(0).pixelHeight / 2),
@@ -206,8 +227,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             entityBitmap = BitmapFactory.decodeResource(getResources(), MapManipulator.entities.get(j).getBitmap());
 
             //Takes the distance of where the screen is on the map and where the entity is, to easily draw on screen
-            entityX = (int)((MapManipulator.entities.get(j).mapCoords.x * blockPixelSize) / ratioX) - phoneULeftX;
-            entityY = (int)((MapManipulator.entities.get(j).mapCoords.y * blockPixelSize) / ratioX) - phoneULeftY;
+            entityX = (int) (((MapManipulator.entities.get(j).mapCoords.x + MapManipulator.entities.get(j).xOffset) * blockPixelSize) / ratioX) - phoneULeftX; //-----
+            entityY = (int) (((MapManipulator.entities.get(j).mapCoords.y + MapManipulator.entities.get(j).yOffset)* blockPixelSize) / ratioX) - phoneULeftY; //------
             Log.i("EntityImgXY_", String.format("X:%d, Y: %d", entityX, entityY));
 
             tempBitmapRect = new Rect(
@@ -224,16 +245,42 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         Log.i("PLAYERIMGXY", String.format("X:%d, Y:%d", playerImageX, playerImageY));
         MapManipulator.printMap();
 
-        for(int i = 0; i < MapManipulator.entities.size(); i++)
-        {
+        boolean dialogueFound = false;
+        for (int i = 0; i < MapManipulator.entities.size(); i++) {
             printText = MapManipulator.entities.get(i).getDialogue();
-            if(MapManipulator.entities.get(i).dialogue != "")
-            {
+            if (!(printText.equals(""))) {
+                dialogueFound = true;
                 break;
             }
         }
-
-        canvas.drawText(printText, 0, canvasHeight / 2, paint);
+        //Loop is picking up text from entity, but printText is not staying initialized to it.
+        if(dialogueFound )
+        {
+            //MultiLine Text
+            if (printText.contains("\n")) {
+                if (printText.contains(":")) {
+                    String[] lines = printText.split("\n");
+                    for (int i = 0; i < lines.length; i++) {
+                        canvas.drawText(lines[i], 15, canvasHeight - (canvasHeight / 3) + ((canvasHeight / 15) * i) + 5, paintShadow);
+                        canvas.drawText(lines[i], 10, canvasHeight - (canvasHeight / 3) + ((canvasHeight / 15) * i), paint);
+                    }
+                } else {
+                    String[] lines = printText.split("\n");
+                    for (int i = 0; i < lines.length; i++) {
+                        canvas.drawText(lines[i], 10, canvasHeight - (canvasHeight / 3) + ((canvasHeight / 15) * i), thoughtPaint);
+                    }
+                }
+            }
+            //Single Line text
+            else {
+                if (printText.contains(":")) {
+                    canvas.drawText(printText, 15, canvasHeight - (canvasHeight / 3) + 5, paintShadow);
+                    canvas.drawText(printText, 10, canvasHeight - (canvasHeight / 3), paint);
+                } else {
+                    canvas.drawText(printText, 10, canvasHeight - (canvasHeight / 3), thoughtPaint);
+                }
+            }
+        }
     }
 
     private ArrayList<Integer> orderEntities()
