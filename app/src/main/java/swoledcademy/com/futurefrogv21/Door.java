@@ -80,7 +80,9 @@ public class Door extends Entity
         else if(mapTransportNum == 3) {
             if(Happenings.stage == 0)
                 dialogue = "I think I've committed enough\ntime theft in the bathroom\nfor today.";
-            else if(Happenings.stage == 1)
+            else if(Happenings.stage >= 2)
+                MapManipulator.loadSpecificMap(mapTransportNum);
+            else
                 dialogue = "It's locked.\nThe janitor must be in there.";
         }
         else

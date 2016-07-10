@@ -30,8 +30,10 @@ public class Trigger extends Entity
         }
         else if(this.name.toUpperCase().equals("BOSSNOTE"))
         {
-            if(MapManipulator.entities.get(0).direction == 2)
-                dialogue = "-The Note Reads-\nSomething";
+            if(MapManipulator.entities.get(0).direction == 2) {
+                dialogue = "-The Note Reads-\nI saw the future. I saw what will be.\nI can't stand living this life.\nThe dissapointment of the present is\ntoo much.";
+                Happenings.stage = 2;
+            }
             else
                 dialogue = "There's a note...";
             return 0;
@@ -50,6 +52,18 @@ public class Trigger extends Entity
                 dialogue = MapManipulator.player.name + "'s Desk.";
             }
             return 0;
+        }
+        else if(this.name.toUpperCase().equals("PORTAL"))
+        {
+            if(Happenings.waterInteraction != 2)
+            {
+                dialogue = "Looks like some sort of portal...";
+                return 0;
+            }
+            else {
+                //Transport to medieval times.
+                return 0;
+            }
         }
 
         MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '-');

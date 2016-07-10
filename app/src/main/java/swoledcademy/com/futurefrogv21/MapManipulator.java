@@ -102,6 +102,7 @@ public class MapManipulator
 
     //Save current state of map into text document method
 
+    //This is where to reference new bitmaps
     public static int getMapBitmap()
     {
         switch(mapBitmapNum)
@@ -112,6 +113,8 @@ public class MapManipulator
                 return R.drawable.map1;
             case 2:
                 return R.drawable.map2;
+            case 3:
+                return R.drawable.map3;
             default:
                 return R.drawable.map0;
         }
@@ -135,6 +138,10 @@ public class MapManipulator
 
             case 2:
                 loadMap2();
+                break;
+
+            case 3:
+                loadMap3();
                 break;
 
             default:
@@ -206,7 +213,6 @@ public class MapManipulator
         if(Happenings.stage == 1)
             entities.get(0).setDialogue("What the heck...");
 
-        Happenings.stage = 2;
         loadMapFromFile(2);
         entities.get(0).mapCoords.x = 2;
         entities.get(0).mapCoords.y = 4;
@@ -215,5 +221,18 @@ public class MapManipulator
         entities.add(new Door(2,5,200,250,2,"Door1", 0));
         entities.add(new Trigger(2,2,0,0,0,"bossnote"));
         entities.add(new Painting(3,0,200,200,0,"diploma"));
+    }
+
+    private static void loadMap3()
+    {
+        Happenings.stage = 3;
+        loadMapFromFile(3);
+        entities.get(0).mapCoords.x = 1;
+        entities.get(0).mapCoords.y = 4;
+        entities.get(0).direction = 0;
+
+        entities.add(new Door(1,5,200,250,2,"door",0));
+        entities.add(new Trigger(7,2,0,0,0,"portal"));
+        entities.add(new Cooler(7,3,150,150,2,"bathroomCooler"));
     }
 }

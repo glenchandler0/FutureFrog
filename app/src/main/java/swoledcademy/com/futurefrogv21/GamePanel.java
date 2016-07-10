@@ -32,7 +32,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     private Paint paint = new Paint(); //For drawing text to screen
     private Paint paintShadow = new Paint();
     private Paint thoughtPaint = new Paint();
-    private String printText = "";
+    private String printText = ""; //Will be changed statically to edit text
 
     public GamePanel(Context context, Resources resources)
     {
@@ -67,8 +67,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height)
     {
         Log.i("GAMEPANEL", "SURFACE CHANGED");
+        //NEW EDIT
+
     }
 
+    //This is where the crash issue is, work on save state? so when game stops, just reload from saved data?
     @Override
     public void surfaceDestroyed(SurfaceHolder holder)
     {
@@ -115,7 +118,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             MapManipulator.entities.get(0).xOffset = 0.5;
             MapManipulator.entities.get(0).yOffset = 0.5;
 
-            //Any time the screen is touched, all entity's dialogues are erased.
+            //Any time the screen is touched, all entity's dialogues are erased so they can be written in new locations later
             for(int i = 0; i < MapManipulator.entities.size(); i++)
             {
                 MapManipulator.entities.get(i).setDialogue("");
@@ -283,6 +286,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
+    //Look at optimizing this sort algorithm?
     private ArrayList<Integer> orderEntities()
     {
         ArrayList<Integer> organized = new ArrayList<Integer>();

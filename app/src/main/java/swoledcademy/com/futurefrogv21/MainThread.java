@@ -63,6 +63,7 @@ public class MainThread extends Thread
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder)
                 {
+                    //Where the heavy lifting happens, the rest is reference code
                     this.gamePanel.update();
                     this.gamePanel.draw(canvas);
                 }
