@@ -1,0 +1,21 @@
+When you wish to interact with an object, it will check the object you are moving into
+the same way it checks if there is an obstruction, except it will be a different ArrayList<Character>
+and if the arraylist contains the character the player is moving into, it will handle an event
+based on what the character is.
+
+//This will go above the check for moving that Entity AND Player has. For every direction
+if(MapManipulator.*interact*.contains(MapManipulator.map.get(mapCoords.y-1).get(mapCoords.x))
+{
+	//Handle in some way, this is just an example
+	
+	//I am not 100% switch works with characters, i think it does though.
+	switch(MapManipulator.map.get(mapCoords.y-1.get(mapCoords.x))
+	{
+		case '@':
+			//call method
+			break;
+		case '*':
+			//call method
+			break;
+	}
+}
