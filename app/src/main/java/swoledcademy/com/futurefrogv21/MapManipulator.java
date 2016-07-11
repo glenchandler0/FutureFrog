@@ -115,6 +115,8 @@ public class MapManipulator
                 return R.drawable.map2;
             case 3:
                 return R.drawable.map3;
+            case 4:
+                return R.drawable.map4;
             default:
                 return R.drawable.map0;
         }
@@ -142,6 +144,10 @@ public class MapManipulator
 
             case 3:
                 loadMap3();
+                break;
+
+            case 4:
+                loadMap4();
                 break;
 
             default:
@@ -232,7 +238,21 @@ public class MapManipulator
         entities.get(0).direction = 0;
 
         entities.add(new Door(1,5,200,250,2,"door",0));
-        entities.add(new Trigger(7,2,0,0,0,"portal"));
+        entities.add(new Trigger(7, 2, 0, 0, 0, "portal"));
         entities.add(new Cooler(7,3,150,150,2,"bathroomCooler"));
+    }
+
+    private static void loadMap4()
+    {
+        if(Happenings.stage == 3)
+            entities.get(0).setDialogue("We're not in Kansas anymore");
+
+        Happenings.stage = 4;
+        loadMapFromFile(4);
+        entities.get(0).mapCoords.x = 5;
+        entities.get(0).mapCoords.y = 3;
+        entities.get(0).direction = 0;
+        entities.add(new Door(1,0,200,250, 0,"door", 0));
+        entities.add(new Computer(6,0,150,150,3,"mainComputer"));
     }
 }

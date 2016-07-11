@@ -55,15 +55,8 @@ public class Trigger extends Entity
         }
         else if(this.name.toUpperCase().equals("PORTAL"))
         {
-            if(Happenings.waterInteraction != 2)
-            {
-                dialogue = "Looks like some sort of portal...";
+                MapManipulator.loadSpecificMap(4);
                 return 0;
-            }
-            else {
-                //Transport to medieval times.
-                return 0;
-            }
         }
 
         MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '-');

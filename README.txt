@@ -13,3 +13,11 @@ Main Goals--
 
 -Fix pause thread issue (multitask crashses game)
 	-Potential Solution: (somewhere in gamePanel class) 
+
+-Make draw algorithm to handle different Width x Height tile sizes
+	-Potential Solution: Have a potential check for size, and when drawing screen outline subtract a smaller amount of pixels from playerImageX and Y.
+				Subtracted amount could be a percentage of 96 x 96 pixels? so subtract (surfaceWidth / 2) * 0.33 if you want to use 32 x 32 pixels.
+
+-Add save states
+	-Potential Solution: Each time you change maps, you save current map to appropriate text file, and if you go to a save state or something, save current layout to text file.
+		-Issues: Current entitiy loctions, are created during the program, not sure where to save all player positions. (Maybe just do player)?
