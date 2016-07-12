@@ -7,21 +7,20 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Map;
+
 
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 {
+
     //This thread will handle the game running.
     private MainThread thread;
 
@@ -179,7 +178,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         canvas.drawColor(Color.BLACK);
 
         int blockPixelSize = 1000; //This probably does nothing
-        Rect tempBitmapRect = null;
+        Rect tempBitmapRect;
         Rect phoneSizeRect = new Rect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         //Loading player and map bitmap
@@ -217,11 +216,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
         //Drawing all other entities
         Bitmap entityBitmap;
-        int entityX = 0;
-        int entityY = 0;
+        int entityX;
+        int entityY;
 
         ArrayList<Integer> ordered = orderEntities();
-        int j = 0;
+        int j;
         //Starts at 1 because player is entity[0]
         for (int i = 0; i < ordered.size(); i++) {
             j = ordered.get(i);
@@ -299,9 +298,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     //Look at optimizing this sort algorithm?
     private ArrayList<Integer> orderEntities()
     {
-        ArrayList<Integer> organized = new ArrayList<Integer>();
+        ArrayList<Integer> organized = new ArrayList<>();
         boolean event = false;
-        int min = 1000;
+        int min;
         int prevNum = -1;
         int index = -1;
 
@@ -321,7 +320,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
                     }
                 }
             }
-            if(event == false)
+            if(!event)
             {
                 return organized;
             }
