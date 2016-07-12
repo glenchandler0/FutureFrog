@@ -1,8 +1,6 @@
 package swoledcademy.com.futurefrogv21;
 
-/**
- * Created by GlenChandler on 7/10/2016.
- */
+// Created by GlenChandler on 7/10/2016.
 public class Computer extends Entity
 {
     public String dialogue = "";
@@ -18,7 +16,7 @@ public class Computer extends Entity
     public int getBitmap()
     {
         int frameImage;
-        if(powerOn == false)
+        if(!powerOn)
             frameImage = R.drawable.computer_off;
         else
             frameImage = R.drawable.computer_on;
