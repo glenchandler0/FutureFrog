@@ -7,21 +7,20 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Map;
+
 
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 {
+
     //This thread will handle the game running.
     private MainThread thread;
 
@@ -163,13 +162,26 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        canvasWidth = canvas.getWidth();
-        canvasHeight = canvas.getHeight();
+
+        //!---Set this coefficient in MapManipulator then retrieve it here --!
+        //-->
+        //If different bitmaps have different tile dimensions--Eventually this will be stored in MapManipulator if we adopt this technique
+        double coef = 1.0; //DEFAULT TILE DIMENSIONS IS 96 X 96
+        if(MapManipulator.mapBitmapNum == 4) //MAP FOR HAS 32 X 32 TILE DIMENSION
+            coef = (1.0/3.0); //This is the ratio of 32 / 96. This will adjust the scaling by this amount to fit.
+        //UNCOMMENT THESE FOR 48 X 48 OR 64 X 64
+        if(MapManipulator.mapBitmapNum == 0)
+            coef = (1.0/2.0); //This is for a 64 x 64 Tile dimension, since 64 / 96 == 0.66
+        // OR DO coef = (1.0 / 2.0) //This is for 48 x 48 Tile Dimension, since 48 / 96 == 0.5
+        //-->
+
+        canvasWidth = (canvas.getWidth());
+        canvasHeight = (canvas.getHeight());
 
         canvas.drawColor(Color.BLACK);
 
-        int blockPixelSize = 500; //This probably does nothing
-        Rect tempBitmapRect = null;
+        int blockPixelSize = 1000; //This probably does nothing
+        Rect tempBitmapRect;
         Rect phoneSizeRect = new Rect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         //Loading player and map bitmap
@@ -193,10 +205,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         int playerImageY = (int) (((MapManipulator.entities.get(0).mapCoords.y + MapManipulator.entities.get(0).yOffset) * blockPixelSize) / ratioY);  //------
 
         //Finds where the corners of the screen should be around the player
-        int phoneULeftX = playerImageX - (canvas.getWidth() / 2);
-        int phoneULeftY = playerImageY - (canvas.getHeight() / 2);
-        int phoneBRightX = playerImageX + (canvas.getWidth() / 2);
-        int phoneBRightY = playerImageY + (canvas.getHeight() / 2);
+        int phoneULeftX = (int)(playerImageX - (canvas.getWidth() / 2) * coef);
+        int phoneULeftY = (int)(playerImageY - (canvas.getHeight() / 2) * coef);
+        int phoneBRightX = (int)(playerImageX + (canvas.getWidth() / 2) * coef);
+        int phoneBRightY = (int)(playerImageY + (canvas.getHeight() / 2) * coef);
         Log.e("PHONE BOX", String.format("PhoneULeftX: %d\nPhoneULeftY: %d\nPhoneBRightX: %d\nPhoneBRightY: %d", phoneULeftX, phoneULeftY, phoneBRightX, phoneBRightY));
 
 
@@ -207,11 +219,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
         //Drawing all other entities
         Bitmap entityBitmap;
-        int entityX = 0;
-        int entityY = 0;
+        int entityX;
+        int entityY;
 
         ArrayList<Integer> ordered = orderEntities();
-        int j = 0;
+        int j;
         //Starts at 1 because player is entity[0]
         for (int i = 0; i < ordered.size(); i++) {
             j = ordered.get(i);
@@ -230,15 +242,15 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             entityBitmap = BitmapFactory.decodeResource(getResources(), MapManipulator.entities.get(j).getBitmap());
 
             //Takes the distance of where the screen is on the map and where the entity is, to easily draw on screen
-            entityX = (int) (((MapManipulator.entities.get(j).mapCoords.x + MapManipulator.entities.get(j).xOffset) * blockPixelSize) / ratioX) - phoneULeftX; //-----
-            entityY = (int) (((MapManipulator.entities.get(j).mapCoords.y + MapManipulator.entities.get(j).yOffset)* blockPixelSize) / ratioX) - phoneULeftY; //------
+            entityX = (int) (((MapManipulator.entities.get(j).mapCoords.x + MapManipulator.entities.get(j).xOffset) * blockPixelSize) / ratioX - phoneULeftX); //-----
+            entityY = (int) (((MapManipulator.entities.get(j).mapCoords.y + MapManipulator.entities.get(j).yOffset)* blockPixelSize) / ratioX - phoneULeftY); //------
             Log.i("EntityImgXY_", String.format("X:%d, Y: %d", entityX, entityY));
 
             tempBitmapRect = new Rect(
-                    (entityX - (MapManipulator.entities.get(j).pixelWidth / 2)),
-                    (entityY - (MapManipulator.entities.get(j).pixelHeight / 2)),
-                    (entityX + (MapManipulator.entities.get(j).pixelWidth / 2)),
-                    (entityY + (MapManipulator.entities.get(j).pixelHeight / 2))
+                    ((int)( entityX / coef) - (MapManipulator.entities.get(j).pixelWidth / 2)),
+                    ((int)( entityY / coef) - (MapManipulator.entities.get(j).pixelHeight / 2)),
+                    ((int)( entityX / coef) + (MapManipulator.entities.get(j).pixelWidth / 2)),
+                    ((int)( entityY / coef) + (MapManipulator.entities.get(j).pixelHeight / 2))
             );
             canvas.drawBitmap(entityBitmap, null, tempBitmapRect, null);
         }
@@ -289,9 +301,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     //Look at optimizing this sort algorithm?
     private ArrayList<Integer> orderEntities()
     {
-        ArrayList<Integer> organized = new ArrayList<Integer>();
+        ArrayList<Integer> organized = new ArrayList<>();
         boolean event = false;
-        int min = 1000;
+        int min;
         int prevNum = -1;
         int index = -1;
 
@@ -311,7 +323,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
                     }
                 }
             }
-            if(event == false)
+            if(!event)
             {
                 return organized;
             }
