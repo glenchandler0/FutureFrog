@@ -163,14 +163,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
+        //!---Set this coefficient in MapManipulator then retrieve it here --!
+        //-->
         //If different bitmaps have different tile dimensions--Eventually this will be stored in MapManipulator if we adopt this technique
         double coef = 1.0; //DEFAULT TILE DIMENSIONS IS 96 X 96
         if(MapManipulator.mapBitmapNum == 4) //MAP FOR HAS 32 X 32 TILE DIMENSION
             coef = (1.0/3.0); //This is the ratio of 32 / 96. This will adjust the scaling by this amount to fit.
         //UNCOMMENT THESE FOR 48 X 48 OR 64 X 64
-        //if(mapManipulator.mapBitmapNum == 5)
-        //  coef = (2.0/3.0) //This is for a 64 x 64 Tile dimension, since 64 / 96 == 0.66
+        if(MapManipulator.mapBitmapNum == 0)
+            coef = (1.0/2.0); //This is for a 64 x 64 Tile dimension, since 64 / 96 == 0.66
         // OR DO coef = (1.0 / 2.0) //This is for 48 x 48 Tile Dimension, since 48 / 96 == 0.5
+        //-->
 
         canvasWidth = (canvas.getWidth());
         canvasHeight = (canvas.getHeight());
