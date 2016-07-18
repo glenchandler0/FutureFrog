@@ -1,0 +1,9 @@
+This commit mainly includes moving towards having a more optimized way to draw to screen.
+This works with resizing 48x48 tilesize maps to 96x96. Which
+appears to run faster.
+
+Additionally, it includes remake of map4 and related sprites, which is the first space map.
+
+
+For next commit, we want to add a global variable for the magnification coefficient to be used in draw()
+to eliminate the if(MapManipulator.mapBitmapNum == [num]) and just retrieve it instead. 
