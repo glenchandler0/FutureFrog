@@ -74,6 +74,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public void surfaceDestroyed(SurfaceHolder holder)
     {
+        //PRETTY MUCH GOING TO DELETE THIS BECAUSE NOT NEEDED, MAYBE SETRUNNING(FALSE)
         Log.i("GAMEPANEL", "SURFACE DESTROYED");
         //Removing this for now because game crashes when i restart it
         //I will make a save method so that you can either have the game continue running, or stop it completely
@@ -84,11 +85,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         {
             try
             {
-                thread.setRunning(false);
-                thread.join();
+                //Removing these lines of code and checking if the thread is already running seems to fix the problem,
+                //however I worry about memory leaks because the thread is never joined.
 
+                //thread.setRunning(false);
+                //thread.join();
+                Log.d("TEST SURFACE DESTROY","TEST SURFACE DESTROY");
             }
-            catch(InterruptedException e)
+            catch(Exception/*InterruptedException*/ e)
             {
                 e.printStackTrace();
             }
@@ -102,8 +106,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         Log.i("GAMEPANEL", "SURFACE CREATED");
 
         //we can safely start the game loop
-        thread.setRunning(true);
-        thread.start();
+        if(thread.getRunning() == false) {
+            thread.setRunning(true);
+            thread.start();
+        }
     }
 
 
@@ -182,12 +188,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
         //Loading player and map bitmap
         Bitmap playerBitmap = BitmapFactory.decodeResource(getResources(), MapManipulator.entities.get(0).getBitmap());
-        Bitmap mapBitmap = BitmapFactory.decodeResource(getResources(), MapManipulator.getMapBitmap());
 
         Log.d("TEXT MAP DIMENSIONS: ", MapManipulator.mapDimX + ", " + MapManipulator.mapDimY);
         //Getting mapImg size for finding conversion ratio
-        int imgX = mapBitmap.getWidth();
-        int imgY = mapBitmap.getHeight();
+        int imgX = MapManipulator.mapBitmap.getWidth();
+        int imgY = MapManipulator.mapBitmap.getHeight();
         //Log.i("ImgXY_", String.format("X:%d, Y: %d", imgX, imgY));
         //Log.i("MapXY_", String.format("X:%d, Y: %d", MapManipulator.mapDimX, MapManipulator.mapDimY));
 
@@ -210,8 +215,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
         //Drawing the map
         tempBitmapRect = new Rect(phoneULeftX, phoneULeftY, phoneBRightX, phoneBRightY);
-
-        canvas.drawBitmap(mapBitmap, tempBitmapRect, phoneSizeRect, null);
+        canvas.drawBitmap(MapManipulator.mapBitmap, tempBitmapRect, phoneSizeRect, null);
 
         //Drawing all other entities
         Bitmap entityBitmap;
@@ -250,8 +254,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             );
             canvas.drawBitmap(entityBitmap, null, tempBitmapRect, null);
         }
-
-        //Drawing player, keep in mind enetities[0] is always player
 
         Log.i("PLAYERIMGXY", String.format("X:%d, Y:%d", playerImageX, playerImageY));
         MapManipulator.printMap();
