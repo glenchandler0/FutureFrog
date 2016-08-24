@@ -164,18 +164,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
     }
 
-    //These are A-Okay
+    //From now on, all mapImages will have 96x96 tile sizes. This will be the game's standard
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-
-        //(1.0) = 96 x 96, (2.0/3.0) = 64 x 64, (1.0 / 2.0) = 48 x 48, (1.0 / 3.0) = 32 x 32
-
-        double coef = 1.0; //Default set
-
-        if(MapManipulator.mapBitmapNum == 0 || MapManipulator.mapBitmapNum == 4)
-            coef = (1.0/2.0);
-
 
         canvasWidth = (canvas.getWidth());
         canvasHeight = (canvas.getHeight());
@@ -206,10 +198,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         int playerImageY = (int) (((MapManipulator.entities.get(0).mapCoords.y + MapManipulator.entities.get(0).yOffset) * blockPixelSize) / ratioY);  //------
 
         //Finds where the corners of the screen should be around the player
-        int phoneULeftX = (int)(playerImageX - (canvas.getWidth() / 2) * coef);
-        int phoneULeftY = (int)(playerImageY - (canvas.getHeight() / 2) * coef);
-        int phoneBRightX = (int)(playerImageX + (canvas.getWidth() / 2) * coef);
-        int phoneBRightY = (int)(playerImageY + (canvas.getHeight() / 2) * coef);
+        int phoneULeftX = playerImageX - (canvas.getWidth() / 2);
+        int phoneULeftY = playerImageY - (canvas.getHeight() / 2);
+        int phoneBRightX = playerImageX + (canvas.getWidth() / 2);
+        int phoneBRightY = playerImageY + (canvas.getHeight() / 2);
         Log.e("PHONE BOX", String.format("PhoneULeftX: %d\nPhoneULeftY: %d\nPhoneBRightX: %d\nPhoneBRightY: %d", phoneULeftX, phoneULeftY, phoneBRightX, phoneBRightY));
 
 
@@ -247,10 +239,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             Log.i("EntityImgXY_", String.format("X:%d, Y: %d", entityX, entityY));
 
             tempBitmapRect = new Rect(
-                    ((int)( entityX / coef) - (MapManipulator.entities.get(j).pixelWidth / 2)),
-                    ((int)( entityY / coef) - (MapManipulator.entities.get(j).pixelHeight / 2)),
-                    ((int)( entityX / coef) + (MapManipulator.entities.get(j).pixelWidth / 2)),
-                    ((int)( entityY / coef) + (MapManipulator.entities.get(j).pixelHeight / 2))
+                    (entityX - (MapManipulator.entities.get(j).pixelWidth / 2)),
+                    (entityY - (MapManipulator.entities.get(j).pixelHeight / 2)),
+                    (entityX + (MapManipulator.entities.get(j).pixelWidth / 2)),
+                    (entityY + (MapManipulator.entities.get(j).pixelHeight / 2))
             );
             canvas.drawBitmap(entityBitmap, null, tempBitmapRect, null);
         }

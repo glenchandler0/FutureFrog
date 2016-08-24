@@ -58,7 +58,8 @@ public class Trigger extends Entity
         }
         else if(this.name.toUpperCase().equals("PORTAL"))
         {
-                MapManipulator.loadSpecificMap(4);
+                //Disabled for now because I don't want to redo this map, but I don't want to transport to a messed up one.
+                //MapManipulator.loadSpecificMap(4);
                 return 0;
         }
 
