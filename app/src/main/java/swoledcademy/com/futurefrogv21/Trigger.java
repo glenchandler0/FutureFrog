@@ -1,7 +1,10 @@
 package swoledcademy.com.futurefrogv21;
 
 /**
- * Created by GlenChandler on 12/20/2015.
+ * The purpose of Trigger is to create a one time use or specific
+ * interactable object rather than creating an entirely new class.
+ *
+ * Trigger objects only have a dialogue trait, which is used to identify its effect.
  */
 public class Trigger extends Entity
 {

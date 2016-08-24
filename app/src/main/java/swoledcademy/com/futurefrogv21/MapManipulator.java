@@ -29,6 +29,7 @@ public class MapManipulator
     public static int mapDimY;
 
     public static int mapBitmapNum = 0;
+    public static Bitmap mapBitmap; //Initialized on loadMapFromFile()
 
     private static Context c;
 
@@ -38,6 +39,7 @@ public class MapManipulator
     }
 
     //Sets map to the text file, so it can be manipulated in game.
+    //Called when map changes
     public static void loadMapFromFile(int mapNum)
     {
         //c = context;
@@ -75,6 +77,7 @@ public class MapManipulator
             }
 
             mapBitmapNum = mapNum;
+            mapBitmap = BitmapFactory.decodeResource(c.getResources(), MapManipulator.getMapBitmap());
             mapDimX = columnCounter;
             mapDimY = rowCounter;
         }

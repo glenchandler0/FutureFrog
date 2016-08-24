@@ -41,6 +41,8 @@ public class MainThread extends Thread
         this.surfaceHolder = surfaceHolder;
         this.gamePanel = gamePanel;
         this.resources  = resources;
+
+        running = false; //Test
     }
     @Override
     public void run()
@@ -112,4 +114,6 @@ public class MainThread extends Thread
     {
         running=b;
     }
+
+    public boolean getRunning() { return running;}
 }
