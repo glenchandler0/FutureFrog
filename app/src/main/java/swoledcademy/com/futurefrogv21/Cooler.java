@@ -23,7 +23,7 @@ public class Cooler extends Entity
 
     public int interact(String name)
     {
-        if(Happenings.stage == 0) {
+        if(Happenings.gameState == 0) {
             if (Happenings.waterInteraction == 0) {
                 dialogue = "???: I know you hate this job.\nTake this key and meet me outside.\nEverything will change soon.";
                 Happenings.waterInteraction = 1;
@@ -31,10 +31,13 @@ public class Cooler extends Entity
                 dialogue = "...";
             }
         }
-        else if(Happenings.stage == 3)
+        else if(MapManipulator.mapBitmapNum == 3)
         {
-            dialogue = "???: Good, you're here.\nIf you want your life to change\nforever, come with me.\nWalk through this portal.";
-            Happenings.waterInteraction = 2;
+            if(Happenings.gameState == 3)
+            {
+                dialogue = "???: Good, you're here.\nIf you want your life to change\nforever, come with me.\nWalk through this portal.";
+                Happenings.waterInteraction = 2;
+            }
         }
         return 0;
     }

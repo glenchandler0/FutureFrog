@@ -35,7 +35,7 @@ public class Trigger extends Entity
         {
             if(MapManipulator.entities.get(0).direction == 2) {
                 dialogue = "-The Note Reads-\nI saw the future. I saw what will be.\nI can't stand living this life.\nThe dissapointment of the present is\ntoo much.";
-                Happenings.stage = 2;
+                Happenings.waterInteraction = 3;
             }
             else
                 dialogue = "There's a note...";
@@ -45,7 +45,7 @@ public class Trigger extends Entity
         {
             if(MapManipulator.player.direction == 0)
             {
-                if(Happenings.stage == 0)
+                if(Happenings.gameState == 0)
                     dialogue = "God, I hate my clients";
                 else
                     dialogue = "Of all times, now is the worst\ntime to work.";

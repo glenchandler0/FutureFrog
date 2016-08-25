@@ -131,31 +131,36 @@ public class MapManipulator
         entities.clear();
         entities.add(player);
         //ALL LOADMAPS PASSED c
-        switch(mapNum)
+        try {
+            switch (mapNum) {
+                case 0:
+                    loadMap0();
+                    break;
+
+                case 1:
+                    loadMap1();
+                    break;
+
+                case 2:
+                    loadMap2();
+                    break;
+
+                case 3:
+                    loadMap3();
+                    break;
+
+                case 4:
+                    loadMap4();
+                    break;
+
+                default:
+                    loadMap0();
+                    break;
+            }
+        }
+        catch(Exception e)
         {
-            case 0:
-                loadMap0();
-                break;
-
-            case 1:
-                loadMap1();
-                break;
-
-            case 2:
-                loadMap2();
-                break;
-
-            case 3:
-                loadMap3();
-                break;
-
-            case 4:
-                loadMap4();
-                break;
-
-            default:
-                loadMap0();
-                break;
+            e.printStackTrace();
         }
     }
 
@@ -163,28 +168,28 @@ public class MapManipulator
 
     private static void loadMap0()
     {
-        int temp = mapBitmapNum; //Holds previous map location
+        int tempBMNum = mapBitmapNum; //Holds previous map location
         loadMapFromFile(0);
 
-        if(temp == 1) //From parking lot
+        if(tempBMNum == 1) //From parking lot
         {
             player.mapCoords.x = 10;
             player.mapCoords.y = 1;
             player.direction = 2;
         }
-        else if(temp == 2) //from office
+        else if(tempBMNum == 2) //from office
         {
             player.mapCoords.x = 3;
             player.mapCoords.y = 1;
             player.direction = 2;
         }
-        else if(temp == 3)
+        else if(tempBMNum == 3)
         {
             player.mapCoords.x = 5;
             player.mapCoords.y = 1;
             player.direction = 2;
         }
-        else if(temp == 0)
+        else if(tempBMNum == 0)
         {
             player.mapCoords.x = 10;
             player.mapCoords.y = 10;
@@ -195,7 +200,7 @@ public class MapManipulator
 
         MapManipulator.entities.add(new Entity(5,4,150,150,0, "Michael"));
         MapManipulator.entities.add(new Door(3, 0, 200, 200, 0, "Boss's office", 2));
-        MapManipulator.entities.add(new Painting(4,0,50,50,0, "trump"));
+        MapManipulator.entities.add(new Painting(4, 0, 50, 50, 0, "trump"));
         MapManipulator.entities.add(new Door(5,0, 200, 200, 0, "Bathroom", 3));
         MapManipulator.entities.add(new Painting(7,0,100,100, 0, "clock"));
         MapManipulator.entities.add(new Door(10, 0, 200, 200, 0, "Garage", 1));
@@ -204,10 +209,11 @@ public class MapManipulator
 
     private static void loadMap1()
     {
-        if(Happenings.stage == 0)
+        if(Happenings.waterInteraction == 1) {
             entities.get(0).setDialogue("Looks like he's not here...");
+            Happenings.waterInteraction = 2;
+        }
 
-        Happenings.stage = 1;
         loadMapFromFile(1);
         entities.get(0).mapCoords.x = 4;
         entities.get(0).mapCoords.y = 4;
@@ -217,10 +223,12 @@ public class MapManipulator
 
     }
 
-    private static void loadMap2()
+    private static void loadMap2() //throws java.lang.InterruptedException
     {
-        if(Happenings.stage == 1)
+        if(Happenings.waterInteraction == 2) {
             entities.get(0).setDialogue("What the heck...");
+            //c.wait(1000); //be very careful warning
+        }
 
         loadMapFromFile(2);
         entities.get(0).mapCoords.x = 2;
@@ -234,7 +242,6 @@ public class MapManipulator
 
     private static void loadMap3()
     {
-        Happenings.stage = 3;
         loadMapFromFile(3);
         entities.get(0).mapCoords.x = 1;
         entities.get(0).mapCoords.y = 4;
@@ -247,10 +254,9 @@ public class MapManipulator
 
     private static void loadMap4()
     {
-        if(Happenings.stage == 3)
+        if(mapBitmapNum == 3)
             entities.get(0).setDialogue("We're not in Kansas anymore");
 
-        Happenings.stage = 4;
         loadMapFromFile(4);
         entities.get(0).mapCoords.x = 5;
         entities.get(0).mapCoords.y = 3;

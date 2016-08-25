@@ -56,13 +56,14 @@ public class Door extends Entity
         return frameImage;
     }
 
+    //If there is wide spread panic, change MapManipulator.mapBitmapNum back to Happenings.stage
     public int interact(String name)
     {
         if(mapTransportNum == 1) {
-            if (Happenings.stage == 0) {
+            if (MapManipulator.mapBitmapNum == 0) {
                 if (Happenings.waterInteraction == 0) {
                     dialogue = "It's locked.";
-                } else if (Happenings.waterInteraction == 1) {
+                } else if (Happenings.waterInteraction > 0) {
                     MapManipulator.loadSpecificMap(mapTransportNum);
                 }
             } else {
@@ -70,17 +71,17 @@ public class Door extends Entity
             }
         }
         else if(mapTransportNum == 2) {
-            if(Happenings.stage == 0)
+            if(Happenings.waterInteraction <= 1)
                 dialogue = "Sound's like Boss has been sobbing\nin there for a couple hours.\nI probably shouldn't go in.\n    Yet.";
-            if(Happenings.stage > 0)
+            if(Happenings.waterInteraction > 1)
             {
-                MapManipulator.loadSpecificMap(mapTransportNum);
+                MapManipulator.loadSpecificMap(mapTransportNum); //arg should be 2
             }
         }
         else if(mapTransportNum == 3) {
-            if(Happenings.stage == 0)
+            if(Happenings.waterInteraction <= 2)
                 dialogue = "I think I've committed enough\ntime theft in the bathroom\nfor today.";
-            else if(Happenings.stage >= 2)
+            else if(Happenings.waterInteraction > 2)
                 MapManipulator.loadSpecificMap(mapTransportNum);
             else
                 dialogue = "It's locked.\nThe janitor must be in there.";

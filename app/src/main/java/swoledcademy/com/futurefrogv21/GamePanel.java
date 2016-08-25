@@ -24,7 +24,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     //This thread will handle the game running.
     private MainThread thread;
 
-    //public static ArrayList<Entity> entities = new ArrayList<Entity>(); //Static so any class can add or manipulate entities
+    //Good to know
     private int canvasWidth;
     private int canvasHeight;
 
