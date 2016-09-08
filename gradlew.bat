@@ -5,8 +5,6 @@
 @rem
 @rem ##########################################################################
 
-call update.bat
-
 @rem Set local scope for the variables with windows NT shell
 if "%OS%"=="Windows_NT" setlocal
 
