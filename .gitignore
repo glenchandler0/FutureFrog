@@ -2,11 +2,7 @@
 /*/build/
 build
 build/
-build/intermediates
-build/*/
-build/intermediates/
-build/intermediates/*
-build/intermediates/*/
+
 
 # Crashlytics configuations
 com_crashlytics_export_strings.xml
