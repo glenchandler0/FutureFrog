@@ -7,9 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -36,6 +34,82 @@ public class MapManipulator
     public static void setContext(Context context)
     {
         c = context;
+    }
+
+    public static void readUserDataFromFile()
+    {
+        AssetManager am = c.getAssets();
+
+        try
+        {
+            //InputStream is = am.open("save.txt");
+            //BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            //String line = reader.readLine();
+
+            //Take 2
+            FileInputStream fis = c.openFileInput("save.txt");
+            StringBuilder builder = new StringBuilder();
+            int ch;
+            while((ch = fis.read()) != -1){
+                builder.append((char)ch);
+            }
+
+            String line = builder.toString();
+
+            //These lines of code are ran everytime the save file is read to assure that everything is initiated
+
+            MapManipulator.loadMapFromFile(0); //player can't be initialized until there's a map, read from file
+            MapManipulator.entities.add(MapManipulator.player = new Player(10, 10, 150, 150, 0, "Steve")); //Simultaniously initialized MapManipulator.player and places in MapManipulator.entities.get(0)
+            MapManipulator.loadSpecificMap(0); //map is loaded normally with standard streamlined method.
+
+            if(line != null)
+            {
+                Log.i("Alert","Loading from file!");
+                //THERE NEEDS TO BE 5 NUMBERS IN "save.txt"
+
+                //Setting scanner to get each number in the file
+                Scanner dataScanner = new Scanner(line);
+
+                //1 - First number in line will be map number
+                MapManipulator.loadSpecificMap(Integer.parseInt(dataScanner.next()));
+
+                //2 - Second number in line is event number
+                Happenings.gameState = Integer.parseInt(dataScanner.next());
+
+                //3:5 -These get the players' location in that map
+                player.mapCoords.x = Integer.parseInt(dataScanner.next());
+                player.mapCoords.y = Integer.parseInt(dataScanner.next());
+                player.direction = Integer.parseInt(dataScanner.next());
+            }
+        }
+        catch(java.io.IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeUserDataToFile()
+    {
+        AssetManager am = c.getAssets();
+
+        try
+        {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(c.openFileOutput("save.txt", Context.MODE_PRIVATE));
+
+            //Creating string with necessary data. Since this is a small amount of data, I'm okay doing it this way.
+            //If there was more data to keep we might want to hold an ArrayList with relevent integers, and loop through it to create this string.
+            String saveText = MapManipulator.mapBitmapNum + " " + Happenings.gameState + " " + player.mapCoords.x + " " + player.mapCoords.y + " " + player.direction + "\n";
+            MapManipulator.entities.get(0).dialogue = saveText;
+
+            outputStreamWriter.write(saveText);
+            outputStreamWriter.close();
+        }
+        catch(java.io.IOException e)
+        {
+            e.printStackTrace();
+            Thread.dumpStack();
+            try{Thread.sleep(5000);}catch(Exception f) {e.printStackTrace();}
+        }
     }
 
     //Sets map to the text file, so it can be manipulated in game.
@@ -99,7 +173,7 @@ public class MapManipulator
             {
                 s += map.get(i).get(j);
             }
-            Log.i("", s);
+            //Log.i("", s);
         }
     }
 
@@ -209,9 +283,9 @@ public class MapManipulator
 
     private static void loadMap1()
     {
-        if(Happenings.waterInteraction == 1) {
+        if(Happenings.gameState == 1) {
             entities.get(0).setDialogue("Looks like he's not here...");
-            Happenings.waterInteraction = 2;
+            Happenings.gameState = 2;
         }
 
         loadMapFromFile(1);
@@ -225,7 +299,7 @@ public class MapManipulator
 
     private static void loadMap2() //throws java.lang.InterruptedException
     {
-        if(Happenings.waterInteraction == 2) {
+        if(Happenings.gameState == 2) {
             entities.get(0).setDialogue("What the heck...");
             //c.wait(1000); //be very careful warning
         }

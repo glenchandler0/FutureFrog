@@ -1,11 +1,17 @@
 package swoledcademy.com.futurefrogv21;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.widget.TextView;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
 public class MainThread extends Thread
 {
@@ -25,12 +31,17 @@ public class MainThread extends Thread
     {
         super();
 
+        /* Warning: want to do this implicitly by calling readUserDataFromFile() : better encapsulation
         MapManipulator.loadMapFromFile(0); //player can't be initialized until there's a map, read from file
         MapManipulator.entities.add(MapManipulator.player = new Player(10, 10, 150, 150, 0, "Steve")); //Simultaniously initialized MapManipulator.player and places in MapManipulator.entities.get(0)
         MapManipulator.loadSpecificMap(0); //map is loaded normally with standard streamlined method.
 
         //Title dialogue
         MapManipulator.entities.get(0).dialogue = "                 FUTURE FROG\n            Tap near your character\n            in a direction to move.";
+
+        */
+        //Make sure player is created now before other methods begin to use it.
+        MapManipulator.readUserDataFromFile();
 
         //Sets the characters that can't be walked through
         MapManipulator.noPass.add('+');
@@ -106,7 +117,7 @@ public class MainThread extends Thread
                 averageFPS = 1000/((totalTime/frameCount)/1000000);
                 frameCount =0;
                 totalTime = 0;
-                Log.i("Run Info:", averageFPS + " FPS");
+                //Log.i("Run Info:", averageFPS + " FPS");
             }
         }
     }

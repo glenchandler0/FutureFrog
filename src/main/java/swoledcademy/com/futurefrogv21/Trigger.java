@@ -28,14 +28,14 @@ public class Trigger extends Entity
     {
         if(this.name.toUpperCase().equals("PARKINGLOTTRIGGER"))
         {
-            if(Happenings.waterInteraction == 1)
+            if(Happenings.gameState == 1)
                 dialogue = "Looks like he's not here...";
         }
         else if(this.name.toUpperCase().equals("BOSSNOTE"))
         {
             if(MapManipulator.entities.get(0).direction == 2) {
                 dialogue = "-The Note Reads-\nI saw the future. I saw what will be.\nI can't stand living this life.\nThe dissapointment of the present is\ntoo much.";
-                Happenings.waterInteraction = 3;
+                Happenings.gameState = 3;
             }
             else
                 dialogue = "There's a note...";
@@ -58,9 +58,12 @@ public class Trigger extends Entity
         }
         else if(this.name.toUpperCase().equals("PORTAL"))
         {
-                //Disabled for now because I don't want to redo this map, but I don't want to transport to a messed up one.
-                //MapManipulator.loadSpecificMap(4);
-                return 0;
+            //Disabled for now because I don't want to redo this map, but I don't want to transport to a messed up one.
+            //if(Happenings.gameState >= 4) {
+            //MapManipulator.loadSpecificMap(4); }
+            MapManipulator.writeUserDataToFile(); //Warning
+            //dialogue = "Game state saved...";
+            return 0;
         }
 
         MapManipulator.map.get(mapCoords.y).set(mapCoords.x, '-');

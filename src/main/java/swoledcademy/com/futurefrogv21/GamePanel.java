@@ -119,6 +119,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         //If there was a touch to the screen.
         if(event.getAction() == MotionEvent.ACTION_DOWN)
         {
+            //Warning
+            MapManipulator.writeUserDataToFile();
+
             //Tapping the screen will set sprite to center of tile before offsetting in move() function
             MapManipulator.entities.get(0).xOffset = 0.5;
             MapManipulator.entities.get(0).yOffset = 0.5;
@@ -219,7 +222,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         //Starts at 1 because player is entity[0]
         for (int i = 0; i < ordered.size(); i++) {
             j = ordered.get(i);
-            Log.i("J IN THE LOOP: ", "" + j);
+            //Log.i("J IN THE LOOP: ", "" + j);
             if (j == 0) {
                 tempBitmapRect = new Rect(
                         (canvas.getWidth() / 2) - (MapManipulator.entities.get(0).pixelWidth / 2),
@@ -236,7 +239,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             //Takes the distance of where the screen is on the map and where the entity is, to easily draw on screen
             entityX = (int) (((MapManipulator.entities.get(j).mapCoords.x + MapManipulator.entities.get(j).xOffset) * blockPixelSize) / ratioX - phoneULeftX); //-----
             entityY = (int) (((MapManipulator.entities.get(j).mapCoords.y + MapManipulator.entities.get(j).yOffset)* blockPixelSize) / ratioX - phoneULeftY); //------
-            Log.i("EntityImgXY_", String.format("X:%d, Y: %d", entityX, entityY));
+            //Log.i("EntityImgXY_", String.format("X:%d, Y: %d", entityX, entityY));
 
             tempBitmapRect = new Rect(
                     (entityX - (MapManipulator.entities.get(j).pixelWidth / 2)),
@@ -247,7 +250,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             canvas.drawBitmap(entityBitmap, null, tempBitmapRect, null);
         }
 
-        Log.i("PLAYERIMGXY", String.format("X:%d, Y:%d", playerImageX, playerImageY));
+        //Log.i("PLAYERIMGXY", String.format("X:%d, Y:%d", playerImageX, playerImageY));
         MapManipulator.printMap();
 
         boolean dialogueFound = false;
@@ -320,7 +323,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             organized.add(index);
             prevNum = min;
             event = false;
-            Log.i("", "" + index);
+
             counter++;
         }
         return organized;

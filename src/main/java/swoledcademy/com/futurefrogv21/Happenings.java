@@ -14,13 +14,16 @@ public class Happenings
      * 4 First space map
      */
 
+    //Notice: THIS NEEDS TO ALL CHANGE TO ONE GAMESTATE
+
+
     /*
      * 0-Hasn't interacted with yet
      * 1-Has talked to
      * 2-Went to parking lot
      * 3-Found boss note
      */
-    public static int waterInteraction = 0;
+    //public static int waterInteraction = 0;
 
     /*
      * 0 = Hasn't left first room yet.

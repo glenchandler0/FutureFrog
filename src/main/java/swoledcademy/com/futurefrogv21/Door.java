@@ -61,9 +61,9 @@ public class Door extends Entity
     {
         if(mapTransportNum == 1) {
             if (MapManipulator.mapBitmapNum == 0) {
-                if (Happenings.waterInteraction == 0) {
+                if (Happenings.gameState == 0) {
                     dialogue = "It's locked.";
-                } else if (Happenings.waterInteraction > 0) {
+                } else if (Happenings.gameState > 0) {
                     MapManipulator.loadSpecificMap(mapTransportNum);
                 }
             } else {
@@ -71,17 +71,17 @@ public class Door extends Entity
             }
         }
         else if(mapTransportNum == 2) {
-            if(Happenings.waterInteraction <= 1)
+            if(Happenings.gameState < 2)
                 dialogue = "Sound's like Boss has been sobbing\nin there for a couple hours.\nI probably shouldn't go in.\n    Yet.";
-            if(Happenings.waterInteraction > 1)
+            if(Happenings.gameState >= 2)
             {
                 MapManipulator.loadSpecificMap(mapTransportNum); //arg should be 2
             }
         }
         else if(mapTransportNum == 3) {
-            if(Happenings.waterInteraction <= 2)
+            if(Happenings.gameState < 3)
                 dialogue = "I think I've committed enough\ntime theft in the bathroom\nfor today.";
-            else if(Happenings.waterInteraction > 2)
+            else if(Happenings.gameState >= 3)
                 MapManipulator.loadSpecificMap(mapTransportNum);
             else
                 dialogue = "It's locked.\nThe janitor must be in there.";
